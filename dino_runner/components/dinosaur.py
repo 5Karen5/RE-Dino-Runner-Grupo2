@@ -5,8 +5,8 @@ import pygame
 from dino_runner.utils.constants import RUNNING
 
 class Dinosaur():
-    X_POS = 80
-    Y_POS = 310
+    X_POS = 21#80
+    Y_POS = 45#310
 
     def __init__(self) -> None:
         self.image = RUNNING[0]
