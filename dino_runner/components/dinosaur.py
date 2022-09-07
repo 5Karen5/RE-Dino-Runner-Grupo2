@@ -12,6 +12,7 @@ class Dinosaur():
         self.image = RUNNING[0]
         self.dino_rect = self.image.get_rect()
 
+
         # Definiendo la posicion del Dino
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
@@ -25,14 +26,19 @@ class Dinosaur():
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
 
     def run(self):
-        self.image = RUNNING[0] if self.step_index < 5 else RUNNING[1]
-        self.dino_rect = self.image.get_rect()
+        if self.step_index%2==0:
+            self.image = RUNNING[0]
+        else:
+            self.image = RUNNING[1]
+        self.step_index +=1
+        # self.image = RUNNING[0] if self.step_index < 5 else RUNNING[1]
+        # self.dino_rect = self.image.get_rect()
 
-        self.dino_rect.x = self.X_POS
-        self.dino_rect.y = self.Y_POS
+        # self.dino_rect.x = self.X_POS
+        # self.dino_rect.y = self.Y_POS
 
-        self.step_index += 1
-        # self.image = RUNNING[0] 
+        # self.step_index += 1
+        # # self.image = RUNNING[0] 
         # if self.step_index <5 :
         #     self.dino_rect = self.image.get_rect()
         # else:
