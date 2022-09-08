@@ -1,5 +1,6 @@
 import pygame
-
+from dino_runner.components import text_utils
+from dino_runner.components.player_heart_manager import PlayerHeartManager
 
 from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 from dino_runner.components.dinosaur import Dinosaur
@@ -20,6 +21,8 @@ class Game:
         self.player = Dinosaur()
         self.cloud = Cloud()
         self.obstacle_manager = Obstaclemanager()
+        self.player_heart_manager = PlayerHeartManager()
+        self.points = 0
 
     def run(self):
         # Game loop: events - update - draw
@@ -34,10 +37,12 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
-            self.keys = pygame.key.get_pressed()
-        self.player.update(self.keys)                
+            #self.keys = pygame.key.get_pressed()
+        #self.player.update(self.keys)                
 
     def update(self):
+        self.keys = pygame.key.get_pressed()
+        self.player.update(self.keys)
         self.obstacle_manager.update(self)
         self.cloud.update(self)
         
@@ -51,7 +56,8 @@ class Game:
         self.cloud.draw(self.screen)
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
-         
+        self.player_heart_manager.draw(self.screen)
+        self.score()
         pygame.display.update()
         pygame.display.flip()
         #pygame.mixer.Sound()#.wav
@@ -64,3 +70,9 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+
+    def score(self):
+        self.points +=1
+        score, score_rect = text_utils.get_score_element(self.points)
+        self.screen.blit(score, score_rect)
+        
