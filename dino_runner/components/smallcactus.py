@@ -7,3 +7,4 @@ class SmallCactus(Obstacle):
         self.type = random.randint(0,2)
         super().__init__(imagen,self.type)
         self.rect.y= 320
+        

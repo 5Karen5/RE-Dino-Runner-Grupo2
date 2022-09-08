@@ -10,5 +10,10 @@ def get_score_element(points):
     text = font.render('SCORE: '+ str (points), True, black_color)
     text_rect = text.get_rect()
     text_rect.center = (900,70)
-
+    
     return text, text_rect
+
+
+
+
+    

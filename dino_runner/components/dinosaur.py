@@ -3,6 +3,7 @@ from signal import default_int_handler
 import pygame
 from pygame.locals import * #gestiona eventos
 
+
 from dino_runner.utils.constants import RUNNING
 from dino_runner.utils.constants import DUCKING
 from dino_runner.utils.constants import JUMPING
@@ -12,9 +13,13 @@ class Dinosaur():
     Y_POS = 310#330 
     Y_POS_DUCK = 340
     GRAVITY = 8.5
+    # SOUND = pygame.mixer.music.load("y2mate.com-Chrome-Dino-Game-jump-sound-effect.wav")
 
+   
     def __init__(self):
 
+        self.soud = pygame.mixer.Sound("jump.wav")
+         
         # dinosaur sprites 
 
         self.run_imagen = RUNNING
@@ -33,7 +38,8 @@ class Dinosaur():
         self.gravity = self.GRAVITY
         self.image = self.run_imagen[0]
         self.dino_rect = self.image.get_rect()
-        
+        # self.dino_rect.inflate_ip(-5,-5)
+        # self.dino_rect.topleft =(100,100)
 
         
         # Definiendo la posicion del Dino
@@ -53,6 +59,9 @@ class Dinosaur():
             self.step_index = 0
 
         if Keys[pygame.K_UP] and not self.dino_jump:
+            # self.sound_jump.play()
+            #pygame.mixer.play()
+            self.soud.play()
             self.dino_duck = False
             self.dino_run = False
             self.dino_jump = True
@@ -82,6 +91,7 @@ class Dinosaur():
          
     def jump(self):
         self.image = self.jump_imagen
+        
         if self.dino_jump:
             self.dino_rect.y -= self.gravity * 4
             self.gravity -=0.8

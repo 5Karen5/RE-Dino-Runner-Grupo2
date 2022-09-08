@@ -23,7 +23,7 @@ class Game:
         self.obstacle_manager = Obstaclemanager()
         self.player_heart_manager = PlayerHeartManager()
         self.points = 0
-
+        
     def run(self):
         # Game loop: events - update - draw
         self.playing = True
@@ -73,6 +73,10 @@ class Game:
 
     def score(self):
         self.points +=1
+        if self.points % 100 ==0:
+            self.game_speed += 1 
         score, score_rect = text_utils.get_score_element(self.points)
         self.screen.blit(score, score_rect)
-        
+
+ 
+

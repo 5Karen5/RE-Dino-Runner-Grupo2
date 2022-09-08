@@ -7,10 +7,14 @@ from dino_runner.utils.constants import SMALL_CACTUS
 from dino_runner.utils.constants import LARGE_CACTUS
 from dino_runner.utils.constants import BIRD
 
+
 class Obstaclemanager:
 
     def __init__(self):
         self.obstacles = []
+        self.tries = 5
+        self.death_sound = pygame.mixer.Sound("dead.wav")
+        
     
     def update(self,game):
         if len(self.obstacles) == 0:
@@ -25,10 +29,20 @@ class Obstaclemanager:
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles)
             if(game.player.dino_rect.colliderect(obstacle.rect)):
-                pygame.time.delay(500)
-                game.playing = False
-                break
-    
+                self.tries -=1
+                game.player_heart_manager.heart_count = self.tries
+                if self.tries != -1:
+
+                    self.obstacles.pop()
+                    pygame.time.delay(100)
+                else:
+
+                # self.menu(self.death_count
+                    self.death_sound.play()
+                    pygame.time.delay(1200)
+                    game.playing = False
+                    break
+        
     def draw(self, screen ):
         for obstacle in self.obstacles:
             obstacle.draw(screen)

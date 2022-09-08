@@ -4,9 +4,10 @@ import random
 
 class Bird(Obstacle):
     def __init__(self,imagen):
+        self.position = [250,310]
         self.type = 0
         super().__init__(imagen,self.type)
-        self.rect.y = 250
+        self.rect.y = self.position[random.randint(0,1)]
         self.index =0
 
     def draw(self,screen):
