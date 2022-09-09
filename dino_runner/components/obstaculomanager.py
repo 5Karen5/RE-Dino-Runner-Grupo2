@@ -28,20 +28,36 @@ class Obstaclemanager:
         
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles)
-            if(game.player.dino_rect.colliderect(obstacle.rect)):
+            if(game.player.dino_rect.colliderect(obstacle.rect)) and not game.player.shield :
                 self.tries -=1
                 game.player_heart_manager.heart_count = self.tries
-                if self.tries != -1:
+                # if  game.player.shield:
+                #     self.obstacles.pop()
+                # if not game.player.shield:
+                #     pygame.time.delay(500)
+                #     game.playing= False
+                #     game.death_count+=1
+                #     break
+                # else:
+                #     self.obstacles.remove(obstacle)
+                if self.tries != 0 or game.player.shield :
 
                     self.obstacles.pop()
                     pygame.time.delay(100)
-                else:
+                elif self.tries <0 or not game.player.shield:
 
-                # self.menu(self.death_count
+                
                     self.death_sound.play()
                     pygame.time.delay(1200)
                     game.playing = False
+                    game.death_count +=1
+                    self.tries = 6
+                    
                     break
+                    
+                
+
+
         
     def draw(self, screen ):
         for obstacle in self.obstacles:

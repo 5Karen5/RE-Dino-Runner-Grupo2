@@ -1,20 +1,26 @@
 from mimetypes import init
+from re import S
 from signal import default_int_handler
 import pygame
 from pygame.locals import * #gestiona eventos
 
-
+from dino_runner.utils.constants import DUCKING  
 from dino_runner.utils.constants import RUNNING
 from dino_runner.utils.constants import DUCKING
 from dino_runner.utils.constants import JUMPING
+from dino_runner.utils.constants import DEFAULT_TYPE
+from dino_runner.utils.constants import RUNNING_SHIELD
+from dino_runner.utils.constants import DUCKING_SHIELD
+from dino_runner.utils.constants import SHIELD_TYPE
+from dino_runner.utils.constants import JUMPING_SHIELD
+
 
 class Dinosaur():
     X_POS = 80
     Y_POS = 310#330 
     Y_POS_DUCK = 340
     GRAVITY = 8.5
-    # SOUND = pygame.mixer.music.load("y2mate.com-Chrome-Dino-Game-jump-sound-effect.wav")
-
+    
    
     def __init__(self):
 
@@ -22,9 +28,10 @@ class Dinosaur():
          
         # dinosaur sprites 
 
-        self.run_imagen = RUNNING
-        self.duck_imagen = DUCKING
-        self.jump_imagen = JUMPING
+        self.run_imagen = {DEFAULT_TYPE:RUNNING,SHIELD_TYPE:RUNNING_SHIELD}
+        self.duck_imagen = {DEFAULT_TYPE:DUCKING,SHIELD_TYPE:DUCKING_SHIELD}
+        self.jump_imagen = {DEFAULT_TYPE:JUMPING,SHIELD_TYPE:JUMPING_SHIELD}
+        self.type = DEFAULT_TYPE
         
         #self.dino_rect = self.run_imagen.get_rect()
         # Controles
@@ -36,7 +43,7 @@ class Dinosaur():
         
         self.step_index = 0
         self.gravity = self.GRAVITY
-        self.image = self.run_imagen[0]
+        self.image = self.run_imagen[self.type][0]
         self.dino_rect = self.image.get_rect()
         # self.dino_rect.inflate_ip(-5,-5)
         # self.dino_rect.topleft =(100,100)
@@ -45,6 +52,16 @@ class Dinosaur():
         # Definiendo la posicion del Dino
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
+        
+        self.setup_state_boolean()
+
+
+    def setup_state_boolean(self):
+        self.has_powerup = False
+        self.shield = False
+        self.show_text = False
+        self.shield_time_up =0
+
 
         
     def update(self, Keys):
@@ -76,21 +93,22 @@ class Dinosaur():
  
 #self.image = self.run_imagen[self.step_index]
     def duck(self):
-        self.image = self.duck_imagen[self.step_index //5]
+        self.image = self.duck_imagen[self.type][self.step_index //5]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS_DUCK
         self.step_index +=1
 
     def run(self):
-        self.image = self.run_imagen[self.step_index //5]
+        self.image = self.run_imagen[self.type][self.step_index //5]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
         self.step_index +=1
          
     def jump(self):
-        self.image = self.jump_imagen
+        self.image = self.jump_imagen[self.type]
+        self.image = JUMPING
         
         if self.dino_jump:
             self.dino_rect.y -= self.gravity * 4
@@ -100,89 +118,22 @@ class Dinosaur():
             self.gravity = self.GRAVITY
         #self.run()
         #pass
+    def check_visibility(self,screen):
+        if self.shield:
+            time_to_show = round((self.shield_time_up-pygame.time.get_ticks())/1000,2)
+            if(time_to_show>=0):
+                fond = pygame.font.Font("freesansbold.ttf",18)
+                text = fond.render(f'shield enable for {time_to_show}', True,(0,0,0))
+                textRect = text.get_rect()
+                textRect.center=(500,40)
+                screen.blit(text,textRect)
+            else:
+                self.shield = False 
+                self.update_to_default(SHIELD_TYPE)
+
+    def update_to_default(self,current_type):
+        if(self.type == current_type):
+            self.type = DEFAULT_TYPE
 
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
-
-    # def run(self):
-        
-    #     if self.step_index <5 :
-    #         self.image = RUNNING[0]
-    #     elif self.step_index >5:
-    #         self.image = RUNNING[1]
-
-    #     if self.step_index >10:
-    #         self.step_index = 0
-        
-    #     self.step_index += 1
- 
- 
-    # def custum (self,):
-    #     if self.step_index <5 :
-    #         self.image2 = self.image2[self.index_change][0] 
-    #     elif self.step_index >5:
-    #         self.image2 = self.image2[self.index_change][1]
-
-    #     if self.step_index >10:
-    #         self.step_index = 0
-        
-    #     self.step_index += 1
-   
-
-
-    # def event(self):
-    #     pass
-
-    # def ducking (self):
-    #     if self.step_index <5 :
-    #         self.image = DUCKING[0]
-    #     elif self.step_index >5:
-    #         self.image = DUCKING[1]
-
-    #     if self.step_index >10:
-    #         self.step_index = 0
-        
-    #     self.step_index += 1
-
-    # def keys(self):
-    #     # pass
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.KEYDOWN:
-    #             if event.key == K_DOWN:
-    #                 self.image2[0]
-    #                 return self.image2[0]
-    #                 #self.index_change  = self.change[0]    
-                    
-    #             # elif event.key == K_UP:
-    #             #     self.index_change  = self.change[0]    
-    #             #     return self.index_changepass
-            
-    #         elif event.type == pygame.KEYUP:
-    #             if event.key == K_DOWN:
-    #                 self.image2[1]
-    #                 return self.image2[1]
-    #                 #self.index_change  = self.change[1]    
-                    
-
-    
-                
-
-        # self.image = RUNNING[0] if self.step_index < 5 else RUNNING[1]
-        # self.dino_rect = self.image.get_rect()
-
-        # self.dino_rect.x = self.X_POS
-        # self.dino_rect.y = self.Y_POS
-
-        # self.step_index += 1
-        # self.image = RUNNING[0] 
-        # if self.step_index <5 :
-        #     self.dino_rect = self.image.get_rect()
-        # else:
-        #     self.dino_rect.x = self.X_POS
-        #     self.dino_rect.y = self.Y_POS
-        
-        # self.step_index +=1
-        
-
-
-
